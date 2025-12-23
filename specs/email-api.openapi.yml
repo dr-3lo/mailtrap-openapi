@@ -44,7 +44,7 @@ tags:
   - name: stats
     x-page-title: Stats
     x-page-description: Email sending stats
-    description: Email sending aggregated stats. The same you see in your Stats dahsboard.
+    description: Email sending aggregated stats. The same you see in your Stats dashboard.
 
 paths:
   /api/accounts/{account_id}/sending_domains:
