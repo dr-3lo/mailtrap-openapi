@@ -198,14 +198,13 @@ paths:
                 .build();
 
             var client = MailtrapClientFactory
-                .createMailtrapClient(config)
-                .testingApi();
+                .createMailtrapClient(config);
 
             var request = new CreateUpdateProjectRequest(
                 new CreateUpdateProjectRequest.ProjectData("My New Project")
             );
 
-            var project = client.projects()
+            var project = client.testingApi().projects()
                 .createProject(accountId, request);
 
             System.out.println(project);
@@ -318,10 +317,9 @@ paths:
                 .build();
 
             var client = MailtrapClientFactory
-                .createMailtrapClient(config)
-                .testingApi();
+                .createMailtrapClient(config);
 
-            var projects = client.projects().getProjects(accountId);
+            var projects = client.testingApi().projects().getProjects(accountId);
 
             for (var project : projects) {
                 System.out.println("Project: " + project.getName() +
@@ -442,7 +440,7 @@ paths:
 
             long projectId = 12345L;
             var project = client.testingApi().projects()
-                .getProject(ACCOUNT_ID, projectId);
+                .getProject(accountId, projectId);
 
             System.out.println("Project: " + project.getName());
         - lang: shell
@@ -565,7 +563,7 @@ paths:
             );
 
             var updatedProject = client.testingApi().projects()
-                .updateProject(ACCOUNT_ID, projectId, request);
+                .updateProject(accountId, projectId, request);
 
             System.out.println("Project updated: " + updatedProject.getName());
         - lang: shell
@@ -699,7 +697,7 @@ paths:
 
             long projectId = 12345L;
             var deletedProject = client.testingApi().projects()
-                .deleteProject(ACCOUNT_ID, projectId);
+                .deleteProject(accountId, projectId);
 
             System.out.println("Project deleted: " + deletedProject.getId());
         - lang: shell
@@ -853,14 +851,14 @@ paths:
                 .build();
 
             var client = MailtrapClientFactory
-                .createMailtrapClient(config)
-                .testingApi();
+                .createMailtrapClient(config);
 
             var request = new CreateInboxRequest(
-                new CreateInboxRequest.InboxData("My Test Inbox")
+                new CreateInboxRequest.InboxCreateData("My Test Inbox")
             );
 
-            var inbox = client.inboxes()
+            long projectId = 12345L;
+            var inbox = client.testingApi().inboxes()
                 .createInbox(accountId, projectId, request);
 
             System.out.println("Inbox created: " + inbox.getName());
@@ -985,7 +983,7 @@ paths:
 
             long inboxId = 12345L;
             var inboxAttributes = client.testingApi().inboxes()
-                .getInboxAttributes(ACCOUNT_ID, inboxId);
+                .getInboxAttributes(accountId, inboxId);
 
             System.out.println(inboxAttributes);
         - lang: shell
@@ -1256,7 +1254,7 @@ paths:
             );
 
             var updatedInbox = client.testingApi().inboxes()
-                .updateInbox(ACCOUNT_ID, inboxId, updateRequest);
+                .updateInbox(accountId, inboxId, updateRequest);
 
             System.out.println(updatedInbox);
         - lang: shell
@@ -1382,7 +1380,7 @@ paths:
 
             long inboxId = 12345L;
             var cleanedInbox = client.testingApi().inboxes()
-                .cleanInbox(ACCOUNT_ID, inboxId);
+                .cleanInbox(accountId, inboxId);
 
             System.out.println(cleanedInbox);
         - lang: shell
@@ -1501,7 +1499,7 @@ paths:
 
             long inboxId = 12345L;
             var markedInbox = client.testingApi().inboxes()
-                .markAsRead(ACCOUNT_ID, inboxId);
+                .markAsRead(accountId, inboxId);
 
             System.out.println(markedInbox);
         - lang: shell
@@ -1620,7 +1618,7 @@ paths:
 
             long inboxId = 12345L;
             var updatedInbox = client.testingApi().inboxes()
-                .resetCredentials(ACCOUNT_ID, inboxId);
+                .resetCredentials(accountId, inboxId);
 
             System.out.println(updatedInbox);
         - lang: shell
@@ -1739,7 +1737,7 @@ paths:
 
             long inboxId = 12345L;
             var updatedInbox = client.testingApi().inboxes()
-                .enableEmailAddress(ACCOUNT_ID, inboxId);
+                .enableEmailAddress(accountId, inboxId);
 
             System.out.println(updatedInbox);
         - lang: shell
@@ -1858,7 +1856,7 @@ paths:
 
             long inboxId = 12345L;
             var updatedInbox = client.testingApi().inboxes()
-                .resetEmailAddresses(ACCOUNT_ID, inboxId);
+                .resetEmailAddresses(accountId, inboxId);
 
             System.out.println(updatedInbox);
         - lang: shell
@@ -1967,7 +1965,7 @@ paths:
                 .createMailtrapClient(config);
 
             var inboxes = client.testingApi().inboxes()
-                .getInboxes(ACCOUNT_ID);
+                .getInboxes(accountId);
 
             System.out.println(inboxes);
         - lang: shell
@@ -2554,7 +2552,7 @@ paths:
             long messageId = 67890L;
 
             var message = client.testingApi().messages()
-                .getMessage(ACCOUNT_ID, inboxId, messageId);
+                .getMessage(accountId, inboxId, messageId);
 
             System.out.println(message);
       operationId: showInboxEmailMessage
@@ -2799,7 +2797,7 @@ paths:
             );
 
             var updatedMessage = client.testingApi().messages()
-                .updateMessage(ACCOUNT_ID, inboxId, messageId, updateRequest);
+                .updateMessage(accountId, inboxId, messageId, updateRequest);
 
             System.out.println(updatedMessage);
       operationId: updateInboxEmailMessage
@@ -3006,7 +3004,7 @@ paths:
             long messageId = 67890L;
 
             var deletedMessage = client.testingApi().messages()
-                .deleteMessage(ACCOUNT_ID, inboxId, messageId);
+                .deleteMessage(accountId, inboxId, messageId);
 
             System.out.println(deletedMessage);
       operationId: deleteInboxEmailMessage
@@ -3224,10 +3222,10 @@ paths:
                 .build();
 
             var client = MailtrapClientFactory
-                .createMailtrapClient(config)
-                .testingApi();
+                .createMailtrapClient(config);
 
-            var messages = client.messages()
+            long inboxId = 12345L;
+            var messages = client.testingApi().messages()
                 .getMessages(accountId, inboxId);
 
             for (var message : messages) {
@@ -3421,7 +3419,7 @@ paths:
 
             var forwardRequest = new ForwardMessageRequest("recipient@example.com");
             var forwardedMessage = client.testingApi().messages()
-                .forwardMessage(ACCOUNT_ID, inboxId, messageId, forwardRequest);
+                .forwardMessage(accountId, inboxId, messageId, forwardRequest);
 
             System.out.println(forwardedMessage);
       operationId: forwardInboxEmailMessage
@@ -3565,7 +3563,10 @@ paths:
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
 
-            var spamReport = client.testingApi().messages().getSpamScore(ACCOUNT_ID, 12345L, 67890L);
+            long inboxId = 12345L;
+            long messageId = 67890L;
+
+            var spamReport = client.testingApi().messages().getSpamScore(accountId, inboxId, messageId);
             System.out.println(spamReport);
       operationId: getInboxEmailMessageSpamReport
     parameters:
@@ -3730,7 +3731,8 @@ paths:
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
 
-            var htmlAnalysis = client.testingApi().messages().getMessageHtmlAnalysis(ACCOUNT_ID, 12345L, 67890L);
+            long inboxId = 12345L;
+            var htmlAnalysis = client.testingApi().messages().getMessageHtmlAnalysis(accountId, inboxId, messageId);
             System.out.println(htmlAnalysis);
       operationId: getInboxEmailMessageHTMLAnalysis
     parameters:
@@ -3837,9 +3839,14 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            String textBody = client.testingApi().messages().getTextMessage(ACCOUNT_ID, 12345L, 67890L);
+            
+            long inboxId = 12345L;
+            long messageId = 67890L;
+
+            String textBody = client.testingApi().messages().getTextMessage(accountId, inboxId, messageId);
             System.out.println(textBody);
       operationId: getInboxEmailMessageBodyAsTxt
     parameters:
@@ -3990,9 +3997,14 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            String rawBody = client.testingApi().messages().getRawMessage(ACCOUNT_ID, 12345L, 67890L);
+            
+            long inboxId = 12345L;
+            long messageId = 67890L;
+
+            String rawBody = client.testingApi().messages().getRawMessage(accountId, inboxId, messageId);
             System.out.println(rawBody);
       operationId: getInboxEmailMessageBodyAsRaw
     parameters:
@@ -4118,9 +4130,14 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            String htmlSource = client.testingApi().messages().getMessageSource(ACCOUNT_ID, 12345L, 67890L);
+            
+            long inboxId = 12345L;
+            long messageId = 67890L;
+
+            String htmlSource = client.testingApi().messages().getMessageSource(accountId, inboxId, messageId);
             System.out.println(htmlSource);
       operationId: getInboxEmailMessageBodyAsHtmlSource
     parameters:
@@ -4248,9 +4265,13 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            String htmlBody = client.testingApi().messages().getHtmlMessage(ACCOUNT_ID, 12345L, 67890L);
+            
+            long inboxId = 12345L;
+            long messageId = 12345L;
+            String htmlBody = client.testingApi().messages().getHtmlMessage(accountId, inboxId, messageId);
             System.out.println(htmlBody);
       operationId: getInboxEmailMessageBodyAsHtml
     parameters:
@@ -4402,9 +4423,14 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            String emlContent = client.testingApi().messages().getMessageAsEml(ACCOUNT_ID, 12345L, 67890L);
+            
+            long inboxId = 12345L;
+            long messageId = 67890L;
+
+            String emlContent = client.testingApi().messages().getMessageAsEml(accountId, inboxId, messageId);
             System.out.println(emlContent);
       operationId: getInboxEmailMessageBodyAsEml
     parameters:
@@ -4506,9 +4532,14 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var mailHeaders = client.testingApi().messages().getMailHeaders(ACCOUNT_ID, 12345L, 67890L);
+            
+            long inboxId = 12345L;
+            long messageId = 67890L;
+
+            var mailHeaders = client.testingApi().messages().getMailHeaders(accountId, inboxId, messageId);
             System.out.println(mailHeaders);
       operationId: getMailHeadersOfEmailMessage
     parameters:
@@ -4637,9 +4668,15 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             MailtrapConfig config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
-            var testingClient = MailtrapClientFactory.createMailtrapClient(config).testingApi();
-            var attachments = testingClient.attachments().getAttachments(12345L, 67890L, 111111L, null);
+            
+            var client = MailtrapClientFactory.createMailtrapClient(config);
+            
+            long inboxId = 12345L;
+            long messageId = 67890L;
+            
+            var attachments = client.testingApi().attachments().getAttachments(accountId, inboxId, messageId, null);
     parameters:
       - $ref: '#/components/parameters/account_id'
       - $ref: '#/components/parameters/inbox_id'
@@ -4760,8 +4797,13 @@ paths:
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
             MailtrapConfig config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
-            var testingClient = MailtrapClientFactory.createMailtrapClient(config).testingApi();
-            var attachment = testingClient.attachments().getSingleAttachment(12345L, 67890L, 111111L, 222222L);
+            
+            long inboxId = 12345L;
+            long messageId = 67890L;
+            long attachmentId = 222222L;
+            
+            var client = MailtrapClientFactory.createMailtrapClient(config);
+            var attachment = client.testingApi().attachments().getSingleAttachment(accountId, inboxId, messageId, attachmentId);
     parameters:
       - $ref: '#/components/parameters/account_id'
       - $ref: '#/components/parameters/inbox_id'

@@ -207,35 +207,34 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
-            import io.mailtrap.model.Address;
-            import io.mailtrap.model.BatchMail;
+            import io.mailtrap.model.request.emails.Address;
+            import io.mailtrap.model.request.emails.BatchEmailBase;
+            import io.mailtrap.model.request.emails.MailtrapBatchMail;
+            import io.mailtrap.model.request.emails.MailtrapMail;
             import java.util.List;
-            import java.util.Map;
 
             var config = new MailtrapConfig.Builder()
                 .token("YOUR_API_KEY")
-                // Add .bulk(true) for Bulk Stream
                 .build();
 
-            var client = MailtrapClientFactory
-                .createMailtrapClient(config);
+            var client = MailtrapClientFactory.createMailtrapClient(config);
 
-            var base = BatchMail.Base.builder()
+            var base = BatchEmailBase.builder()
                 .from(new Address("sender@example.com"))
                 .subject("Monthly Newsletter")
                 .text("Check out our latest updates!")
                 .build();
 
             var requests = List.of(
-                BatchMail.Request.builder()
+                MailtrapMail.builder()
                     .to(List.of(new Address("user1@example.com")))
                     .build(),
-                BatchMail.Request.builder()
+                MailtrapMail.builder()
                     .to(List.of(new Address("user2@example.com")))
                     .build()
             );
 
-            var batchMail = BatchMail.builder()
+            var batchMail = MailtrapBatchMail.builder()
                 .base(base)
                 .requests(requests)
                 .build();

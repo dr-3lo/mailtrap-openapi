@@ -154,8 +154,7 @@ paths:
                 .token("YOUR_API_KEY")
                 .build();
 
-            var client = MailtrapClientFactory
-                .createMailtrapClient(config);
+            var client = MailtrapClientFactory.createMailtrapClient(config);
 
             var mail = MailtrapMail.builder()
                 .from(new Address("sender@example.com", "Sender Name"))

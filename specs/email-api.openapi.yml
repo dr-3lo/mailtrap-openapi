@@ -848,6 +848,9 @@ paths:
             suppressions.forEach(suppression ->
                 System.out.println("Email: " + suppression.getEmail())
             );
+            filtered.forEach(filteredSuppression ->
+                System.out.println("Email: " + filteredSuppression.getEmail())
+            );
         - lang: shell
           label: 'cURL'
           source: |
@@ -1055,9 +1058,11 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.emailTemplatesApi().templates().getAll(accountId);
+            
+            var response = client.emailTemplatesApi().emailTemplates().getAllTemplates(accountId);
         - lang: shell
           label: cURL
           source: |
@@ -1171,11 +1176,14 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_TOKEN").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var request = new CreateTemplateRequest(
-                "Welcome Email", "Welcome to {{company_name}}!", "onboarding",
-                "<h1>Welcome {{user_name}}!</h1>", "Welcome {{user_name}}!"
+            
+            var request = new CreateEmailTemplateRequest(
+            new EmailTemplate(
+            "Welcome Email", "onboarding", "Welcome to {{company_name}}!",
+            "Welcome {{user_name}}!", "<h1>Welcome {{user_name}}!</h1>")
             );
             var template = client.emailTemplatesApi().emailTemplates().createEmailTemplate(accountId, request);
         - lang: shell

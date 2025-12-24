@@ -172,8 +172,8 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
-            import io.mailtrap.model.Address;
-            import io.mailtrap.model.MailtrapMail;
+            import io.mailtrap.model.request.emails.Address;
+            import io.mailtrap.model.request.emails.MailtrapMail;
             import java.util.List;
 
             var config = new MailtrapConfig.Builder()
@@ -181,8 +181,7 @@ paths:
                 .bulk(true)  // Enable bulk sending
                 .build();
 
-            var client = MailtrapClientFactory
-                .createMailtrapClient(config);
+            var client = MailtrapClientFactory.createMailtrapClient(config);
 
             var mail = MailtrapMail.builder()
                 .from(new Address("marketing@example.com"))
@@ -195,7 +194,7 @@ paths:
                 .category("newsletter")
                 .build();
 
-            client.bulkApi().emails().send(mail);
+            client.bulkSendingApi().emails().send(mail);
         - lang: shell
           label: 'cURL'
           source: |
