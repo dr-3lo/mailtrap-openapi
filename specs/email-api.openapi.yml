@@ -1391,7 +1391,7 @@ paths:
   '/api/accounts/{account_id}/stats':
     get:
       operationId: getAccountSendingStats
-      summary: Get account sending stats
+      summary: Get Sending Stats
       description: Get account sending stats. Use filters to get specific stats.
       tags:
         - stats
@@ -1421,7 +1421,7 @@ paths:
   '/api/accounts/{account_id}/stats/domains':
     get:
       operationId: getAccountSendingStatsByDomains
-      summary: Get account sending stats by domains
+      summary: Get Sending Stats by Domains
       description: Get account sending stats by domains. Use filters to get specific stats.
       tags:
         - stats
@@ -1462,7 +1462,7 @@ paths:
   '/api/accounts/{account_id}/stats/categories':
     get:
       operationId: getAccountSendingStatsByCategories
-      summary: Get account sending stats by categories
+      summary: Get Sending Stats by Categories
       description: Get account sending stats by categories. Use filters to get specific stats.
       tags:
         - stats
@@ -1502,7 +1502,7 @@ paths:
   '/api/accounts/{account_id}/stats/email_service_providers':
     get:
       operationId: getAccountSendingStatsByEmailServiceProviders
-      summary: Get account sending stats by email service providers
+      summary: Get Sending Stats by Email Service Providers
       description: Get account sending stats by email service providers. Use filters to get specific stats.
       tags:
         - stats
@@ -1542,7 +1542,7 @@ paths:
   '/api/accounts/{account_id}/stats/date':
     get:
       operationId: getAccountSendingStatsByDate
-      summary: Get account sending stats by date
+      summary: Get Sending Stats by Date
       description: Get account sending stats by date. Use filters to get specific stats.
       tags:
         - stats
