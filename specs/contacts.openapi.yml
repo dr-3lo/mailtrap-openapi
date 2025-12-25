@@ -209,7 +209,8 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
-            import io.mailtrap.model.request.contact.CreateContactRequest;
+            import io.mailtrap.model.request.contacts.CreateContactRequest;
+            import java.util.HashMap;
 
             var config = new MailtrapConfig.Builder()
                 .token("YOUR_API_TOKEN")
@@ -516,10 +517,13 @@ paths:
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
             import io.mailtrap.model.request.contacts.*;
+            import java.util.Map;
+            
             MailtrapConfig config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
+            
             var request = new UpdateContactRequest(new UpdateContact("new@example.com", Map.of("first_name", "John"), List.of(), List.of(), false));
-            var response = client.contactsApi().contacts().updateContact(12345L, "contact_id_or_email", request);
+            var response = client.contactsApi().contacts().updateContact(accountId, "contact_id_or_email", request);
       summary: Update contact
       tags:
         - Contacts
@@ -621,9 +625,11 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             MailtrapConfig config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            client.contactsApi().contacts().deleteContact(12345L, "contact_id_or_email");
+            
+            client.contactsApi().contacts().deleteContact(accountId, "contact_id_or_email");
       summary: Delete contact
       tags:
         - Contacts
@@ -711,10 +717,15 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.request.contactevents.CreateContactEventRequest;
+            import java.util.Map;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var params = Map.of("user_id", 101, "is_active", true);
-            var response = client.contactsApi().contacts().createEvent(accountId, "contact_id", "UserLogin", params);
+            
+            Map<String, Object> params = Map.of("user_id", 101, "is_active", true);
+            var request = new CreateContactEventRequest("UserLogin", params);
+            var response = client.contactsApi().contactEvents().createContactEvent(accountId, "contact_id", request);
       requestBody:
         content:
           application/json:
@@ -818,10 +829,17 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.request.contactexports.ContactExportFilter;
+            import io.mailtrap.model.request.contactexports.ContactExportFilterOperator;
+            import io.mailtrap.model.request.contactexports.CreateContactsExportRequest;
+            import java.util.List;
+
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var filters = List.of(Map.of("name", "list_id", "operator", "equal", "value", List.of(1, 2)));
-            var response = client.contactsApi().exports().create(accountId, filters);
+            
+            var idsFilter = ContactExportFilter.listIds(ContactExportFilterOperator.EQUAL, 1L, 2L);
+            var request = new CreateContactsExportRequest(List.of(idsFilter));
+            var response = client.contactsApi().contactExports().createContactExport(accountId, request);
       requestBody:
         content:
           application/json:
@@ -917,8 +935,10 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
+            
             var response = client.contactsApi().exports().get(accountId, exportId);
       responses:
         '200':
@@ -1036,10 +1056,15 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.request.contactimports.Contact;
+            import io.mailtrap.model.request.contactimports.ImportContactsRequest;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var contacts = List.of(Map.of("email", "user1@example.com", "fields", Map.of("first_name", "John")));
-            var response = client.contactsApi().imports().create(accountId, contacts);
+            
+            var contact = new Contact("user1@example.com", Map.of("first_name", "John"), Collections.emptyList(), Collections.emptyList());
+            var importContactsRequest = new ImportContactsRequest(List.of(contact));
+            client.contactsApi().contactImports().importContacts(accountId, importContactsRequest);
       requestBody:
         content:
           application/json:
@@ -1141,7 +1166,8 @@ paths:
             import io.mailtrap.factory.MailtrapClientFactory;
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().imports().get(accountId, importId);
+            
+            var response = client.contactsApi().contactImports().getContactImport(accountId, importId);
       responses:
         '200':
           description: OK.
@@ -1231,9 +1257,11 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().lists().getAll(accountId);
+            
+            var response = client.contactsApi().contactLists().findAll(accountId);
       responses:
         '200':
           description: OK.
@@ -1313,9 +1341,12 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.request.contactlists.CreateUpdateContactListRequest;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().lists().create(accountId, "Customers");
+            
+            var response = client.contactsApi().contactLists().createContactList(accountId, new CreateUpdateContactListRequest("Customers"));
       requestBody:
         content:
           application/json:
@@ -1401,9 +1432,12 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().lists().get(accountId, listId);
+            
+            long listId = 1L;
+            var response = client.contactsApi().contactLists().getContactList(accountId, listId);
       responses:
         '200':
           description: Returns attributes of the contact list.
@@ -1473,9 +1507,12 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().lists().update(accountId, listId, "Former Customers");
+            
+            long listId = 1L;
+            var response = client.contactsApi().contactLists().updateContactList(accountId, listId, new CreateUpdateContactListRequest("Former Customers"));
       requestBody:
         content:
           application/json:
@@ -1558,9 +1595,12 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            client.contactsApi().lists().delete(accountId, listId);
+            
+            long listId = 1L;
+            client.contactsApi().contactLists().deleteContactList(accountId, listId);
       responses:
         '204':
           description: Contact List successfully deleted
@@ -1632,9 +1672,11 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().fields().getAll(accountId);
+            
+            var response = client.contactsApi().contactFields().getAllContactFields(accountId);
       responses:
         '200':
           description: OK.
@@ -1719,9 +1761,14 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.ContactFieldDataType;
+            import io.mailtrap.model.request.contactfields.CreateContactFieldRequest;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().fields().create(accountId, "Company", "text", "company");
+            
+            var request = new CreateContactFieldRequest("Company", ContactFieldDataType.TEXT, "company");
+            var response = client.contactsApi().contactFields().createContactField(accountId, request);
       requestBody:
         content:
           application/json:
@@ -1838,9 +1885,12 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().fields().get(accountId, fieldId);
+            
+            long fieldId = 2L;
+            var response = client.contactsApi().contactFields().getContactField(accountId, fieldId);
       responses:
         '200':
           description: Returns attributes of the contact field.
@@ -1913,9 +1963,13 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.request.contactfields.UpdateContactFieldRequest;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.contactsApi().fields().update(accountId, fieldId, "Updated Name", "updated_name");
+            
+            var request = new UpdateContactFieldRequest("Updated Name", "updated_name");
+            var response = client.contactsApi().contactFields().updateContactField(accountId, fieldId, request);
       requestBody:
         content:
           application/json:
@@ -2020,9 +2074,12 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            client.contactsApi().fields().delete(accountId, fieldId);
+            
+            long fieldId = 2L;
+            client.contactsApi().contactFields().deleteContactField(accountId, fieldId);
       responses:
         '204':
           description: Contact Field successfully deleted

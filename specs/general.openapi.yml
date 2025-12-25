@@ -257,11 +257,9 @@ paths:
                 .token("YOUR_API_TOKEN")
                 .build();
 
-            var client = MailtrapClientFactory
-                .createMailtrapClient(config)
-                .generalApi();
+            var client = MailtrapClientFactory.createMailtrapClient(config);
 
-            var accounts = client.accounts().getAll();
+            var accounts = client.generalApi().accounts().getAllAccounts();
 
             for (var account : accounts) {
                 System.out.println("Account: " + account.getName());
@@ -356,9 +354,12 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.request.accountaccesses.ListAccountAccessQueryParams;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.generalApi().accountAccesses().getAll(accountId);
+            
+            var response = client.generalApi().accountAccesses().listUserAndInviteAccountAccesses(accountId, ListAccountAccessQueryParams.empty());
       parameters:
         - name: project_ids
           description: The identifiers of the projects for which to include the results
@@ -458,9 +459,11 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            client.generalApi().accountAccesses().delete(accountId, accessId);
+            
+            client.generalApi().accountAccesses().removeAccountAccess(accessId, accountId);
       responses:
         '200':
           description: Returns confirmation of successful deletion and id of the deleted access.
@@ -570,10 +573,24 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            import io.mailtrap.model.AccessLevel;
+            import io.mailtrap.model.ResourceType;
+            import io.mailtrap.model.request.permissions.ManagePermissionsRequest;
+            import io.mailtrap.model.request.permissions.Permission;
+  
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var permissions = List.of(Map.of("resource_id", "3281", "resource_type", "account", "access_level", "viewer"));
-            client.generalApi().permissions().bulkUpdate(accountId, accessId, permissions);
+            
+            final ManagePermissionsRequest request = new ManagePermissionsRequest(List.of(
+                new Permission(
+                    "3281",
+                    ResourceType.ACCOUNT,
+                    AccessLevel.VIEWER,
+                    false
+                )
+            ));
+            
+            client.generalApi().permissions().managePermissions(accessId, accountId, request);
       requestBody:
         content:
           application/json:
@@ -699,8 +716,10 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
+            
             var response = client.generalApi().permissions().getResources(accountId);
       responses:
         '200':
@@ -811,9 +830,11 @@ paths:
           source: |
             import io.mailtrap.config.MailtrapConfig;
             import io.mailtrap.factory.MailtrapClientFactory;
+            
             var config = new MailtrapConfig.Builder().token("YOUR_API_KEY").build();
             var client = MailtrapClientFactory.createMailtrapClient(config);
-            var response = client.generalApi().billing().getUsage(accountId);
+            
+            var response = client.generalApi().billing().getCurrentBillingCycleUsage(accountId);
       responses:
         '200':
           description: Returns an object with current billing cycle usage for Sandbox and Email Sending (Email API/SMTP) if available.
